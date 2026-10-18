@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TBC Poster Studio</title>
+<style>
+  :root { --orange:#FF9900; --blue:#146EB4; --black:#000000; --navy:#232F3E; --grey:#F2F2F2; --muted:rgba(35,47,62,0.65); --line:rgba(35,47,62,0.14); }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { font-family: 'Amazon Ember', Arial, sans-serif; background: var(--grey); color: var(--navy); display: flex; flex-direction: column; }
+
+  header { background: var(--navy); border-bottom: 5px solid var(--orange); color: #fff; }
+  .bar { max-width: 940px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; gap: 14px; }
+  .logo { width: 46px; height: 46px; border-radius: 50%; background: var(--orange); color: var(--navy); font-weight: 800; font-size: 19px; display: grid; place-items: center; flex: none; }
+  .titles { flex: 1; min-width: 0; }
+  .titles h1 { margin: 0; font-size: 20px; line-height: 1.2; }
+  .titles p { margin: 2px 0 0; font-size: 13px; color: rgba(255,255,255,0.75); }
+  .reset { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4); border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .reset:hover { background: rgba(255,255,255,0.12); }
+
+  main { flex: 1; overflow-y: auto; }
+  .wrap { max-width: 940px; margin: 0 auto; padding: 22px 20px 12px; }
+
+  .hero { text-align: center; padding: 14px 0 6px; }
+  .hero h2 { font-size: 30px; margin: 6px 0 6px; }
+  .hero p { margin: 0 auto 22px; max-width: 640px; color: var(--muted); font-size: 16px; line-height: 1.5; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; text-align: left; }
+  .card { background: #fff; border: 1px solid var(--line); border-left: 6px solid var(--orange); border-radius: 14px; padding: 14px 16px; cursor: pointer; font: inherit; color: inherit; text-align: left; transition: transform .12s, box-shadow .12s; }
+  .card:nth-child(even) { border-left-color: var(--blue); }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(35,47,62,0.14); }
+  .card .ic { font-size: 24px; }
+  .card .t { font-weight: 700; font-size: 16px; margin: 6px 0 3px; }
+  .card .d { font-size: 14px; color: var(--muted); line-height: 1.4; }
+  .card .tag { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--blue); }
+
+  .can { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0 8px; text-align: left; }
+  .can > div { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 14px; line-height: 1.55; }
+  .can h3 { margin: 0 0 6px; font-size: 14px; letter-spacing: .5px; text-transform: uppercase; }
+  .can .yes h3 { color: var(--blue); } .can .no h3 { color: var(--muted); }
+  @media (max-width: 640px) { .can { grid-template-columns: 1fr; } .hero h2 { font-size: 24px; } }
+
+  .msg { display: flex; gap: 10px; margin: 16px 0; align-items: flex-start; }
+  .msg.user { justify-content: flex-end; }
+  .av { width: 34px; height: 34px; border-radius: 50%; background: var(--orange); color: var(--navy); font-weight: 800; font-size: 13px; display: grid; place-items: center; flex: none; }
+  .bubble { max-width: min(720px, 86%); padding: 13px 17px; border-radius: 18px; font-size: 15.5px; line-height: 1.55; overflow-wrap: anywhere; }
+  .msg.bot .bubble { background: #fff; border: 1px solid var(--line); border-top-left-radius: 6px; }
+  .msg.user .bubble { background: var(--blue); color: #fff; border-top-right-radius: 6px; white-space: pre-wrap; }
+  .bubble h3, .bubble h4 { margin: 4px 0 8px; }
+  .bubble h3 { font-size: 20px; } .bubble h4 { font-size: 16px; margin-top: 14px; }
+  .bubble p { margin: 0 0 8px; }
+  .bubble img { display: block; width: 100%; max-width: 640px; border-radius: 12px; margin: 8px 0; box-shadow: 0 3px 14px rgba(35,47,62,0.22); cursor: zoom-in; background: var(--grey); min-height: 80px; }
+  .bubble a { color: var(--blue); font-weight: 700; }
+  .bubble blockquote { margin: 8px 0; padding: 12px 16px; background: var(--grey); border-left: 5px solid var(--orange); border-radius: 10px; }
+  .bubble hr { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 2px; }
+  .btn { background: var(--navy); color: #fff; border: 0; border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn.alt { background: #fff; color: var(--navy); border: 1px solid var(--line); }
+  .btn:hover { filter: brightness(1.12); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px 44px; }
+  .chip { background: #fff; border: 1px solid var(--orange); color: var(--navy); border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+  .chip:hover { background: var(--orange); }
+
+  .typing { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; }
+  .dots { display: inline-flex; gap: 4px; } .dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); animation: b 1.1s infinite; } .dots i:nth-child(2){animation-delay:.15s} .dots i:nth-child(3){animation-delay:.3s}
+  @keyframes b { 0%,80%,100% { transform: scale(.6); opacity:.5 } 40% { transform: scale(1); opacity:1 } }
+
+  footer { background: #fff; border-top: 1px solid var(--line); }
+  .composer { max-width: 940px; margin: 0 auto; padding: 12px 20px 14px; }
+  .row { display: flex; gap: 10px; align-items: flex-end; }
+  textarea { flex: 1; resize: none; border: 2px solid var(--line); border-radius: 16px; padding: 13px 16px; font: inherit; font-size: 16px; line-height: 1.4; max-height: 160px; outline: none; background: #fff; color: var(--navy); }
+  textarea:focus { border-color: var(--orange); }
+  .send { width: 50px; height: 50px; border-radius: 50%; border: 0; background: var(--orange); color: var(--navy); cursor: pointer; display: grid; place-items: center; flex: none; }
+  .send:disabled { background: var(--line); cursor: not-allowed; }
+  .send svg { width: 22px; height: 22px; }
+  .hint { font-size: 12px; color: var(--muted); margin: 7px 4px 0; }
+
+  .gate { position: fixed; inset: 0; background: rgba(35,47,62,0.88); display: none; place-items: center; z-index: 10; padding: 20px; }
+  .gate.show { display: grid; }
+  .gate .box { background: #fff; border-radius: 18px; padding: 26px; max-width: 380px; width: 100%; text-align: center; }
+  .gate input { width: 100%; border: 2px solid var(--line); border-radius: 12px; padding: 12px 14px; font: inherit; margin: 12px 0; }
+  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; place-items: center; z-index: 11; padding: 20px; cursor: zoom-out; }
+  .lightbox.show { display: grid; } .lightbox img { max-width: 100%; max-height: 100%; border-radius: 12px; }
+</style>
+</head>
+<body>
+
+<header><div class="bar">
+  <div class="logo">TB</div>
+  <div class="titles"><h1>TBC Poster Studio</h1><p>Posters and captions for Think Big Circle events, in seconds</p></div>
+  <button class="reset" id="reset">+ New chat</button>
+</div></header>
+
+<main id="scroll"><div class="wrap" id="wrap">
+  <section class="hero" id="hero">
+    <h2>What would you like to create?</h2>
+    <p>Pick an idea below, or describe what you need in your own words. I will design the poster and write a ready-to-post caption.</p>
+    <div class="cards" id="cards"></div>
+    <div class="can">
+      <div class="yes"><h3>✅ I can</h3>
+        Make posters for a month, week, day, one event, a region or a session type · countdown and "coming soon" posters · change headlines, wording and tone · remove text you don't want · answer quick questions about upcoming events · share to the community space
+      </div>
+      <div class="no"><h3>🚫 I can't (yet)</h3>
+        Edit the monday.com board · create new events · make posters for educator resources · invent details that aren't on the board, like speakers or prizes
+      </div>
+    </div>
+  </section>
+  <div id="log"></div>
+</div></main>
+
+<footer><div class="composer">
+  <div class="row">
+    <textarea id="input" rows="1" placeholder="Describe the poster you need…"></textarea>
+    <button class="send" id="send" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+  </div>
+  <div class="hint">Enter to send · Shift+Enter for a new line · After I reply, ask for changes like "shorter caption" or "only EMEA"</div>
+</div></footer>
+
+<div class="gate" id="gate"><div class="box">
+  <div class="logo" style="margin:0 auto 10px">TB</div>
+  <h3 style="margin:0">Enter the team passcode</h3>
+  <input id="pass" type="password" placeholder="Passcode" autocomplete="off">
+  <button class="btn" id="passGo">Continue</button>
+</div></div>
+<div class="lightbox" id="lightbox"><img alt="Poster"></div>
+
+<script>
+// ============ Settings ============
+const CHAT_URL = 'PASTE_YOUR_N8N_CHAT_URL_HERE';   // the Production Chat URL from the "Chat Request" node
+const ASK_FOR_PASSCODE = false;                      // true = ask for the passcode you set as TEAM_PASSCODE in the workflow
+// ==================================
+
+const IDEAS = [
+  { ic: '📅', t: "Next week's events", d: 'A poster for everything lined up next week, written to drive engagement.', text: "Create a poster for the events lined up for next week so that I can drive engagement", mode: 'send' },
+  { ic: '⏳', t: 'Countdown poster', d: 'A "days to go" poster for one event. Add the event name.', text: 'Create a 5 day countdown poster for ', mode: 'fill' },
+  { ic: '🔜', t: 'Coming soon teaser', d: 'A text-only poster that builds anticipation.', text: 'Create a poster that says coming soon in December', mode: 'send' },
+  { ic: '🌍', t: 'By region and dates', d: 'Every event in a date range for one region.', text: 'Create a poster for all events from May to December for the AMER region', mode: 'send' },
+  { ic: '🗓️', t: 'Month roundup', d: 'All events in a month on one poster.', text: 'Create a poster for all events in November 2026', mode: 'send' },
+  { ic: '💬', t: "What's coming up?", d: 'Ask a quick question about upcoming events.', text: 'What events are coming up in the next 2 weeks?', mode: 'send' },
+];
+const FOLLOW = ['✏️ Shorter caption', '🎯 Only EMEA', '🔁 New headline', '📣 Post it'];
+
+const $ = id => document.getElementById(id);
+const log = $('log'), input = $('input'), sendBtn = $('send'), scrollBox = $('scroll');
+let sessionId = sessionStorage.getItem('tbc-session') || ('web-' + Math.random().toString(36).slice(2) + Date.now().toString(36));
+sessionStorage.setItem('tbc-session', sessionId);
+let passcode = sessionStorage.getItem('tbc-pass') || '';
+let busy = false;
+
+// ---------- tiny, safe markdown ----------
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function inline(s) {
+  s = esc(s);
+  s = s.replace(/!\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g, '<img src="$2" alt="$1" loading="lazy">');
+  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/(^|[\s(])_([^_]+)_(?=[\s).,!?:;]|$)/g, '$1<em>$2</em>');
+  return s;
+}
+function md(src) {
+  const lines = src.replace(/\r/g, '').split('\n');
+  let html = '', para = [], quote = [];
+  const flushP = () => { if (para.length) { html += '<p>' + para.map(inline).join('<br>') + '</p>'; para = []; } };
+  const flushQ = () => { if (quote.length) { html += '<blockquote>' + quote.map(l => inline(l.replace(/\s+$/, ''))).join('<br>') + '</blockquote>'; quote = []; } };
+  for (const raw of lines) {
+    const line = raw.replace(/\s+$/, '');
+    if (/^>\s?/.test(line)) { flushP(); quote.push(line.replace(/^>\s?/, '')); continue; }
+    flushQ();
+    if (!line.trim()) { flushP(); continue; }
+    const h = line.match(/^(#{1,4})\s+(.*)$/);
+    if (h) { flushP(); const n = h[1].length <= 3 ? 3 : 4; html += `<h${n}>${inline(h[2])}</h${n}>`; continue; }
+    if (/^---+$/.test(line.trim())) { flushP(); html += '<hr>'; continue; }
+    para.push(line);
+  }
+  flushP(); flushQ();
+  return html;
+}
+// Caption as Google Chat text (so "Copy caption" keeps bold and links)
+function captionForGoogleChat(src) {
+  const q = src.split('\n').filter(l => /^>/.test(l)).map(l => l.replace(/^>\s?/, '').replace(/\s+$/, ''));
+  return q.join('\n')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, (m, t, u) => t === u ? u : `<${u}|${t}>`)
+    .replace(/\*\*([^*]+)\*\*/g, '*$1*').trim();
+}
+
+// ---------- UI helpers ----------
+function toBottom() { scrollBox.scrollTop = scrollBox.scrollHeight; }
+function addUser(text) {
+  const d = document.createElement('div'); d.className = 'msg user'; d.innerHTML = '<div class="bubble"></div>';
+  d.querySelector('.bubble').textContent = text; log.appendChild(d); toBottom();
+}
+function addBot(src) {
+  const d = document.createElement('div'); d.className = 'msg bot';
+  d.innerHTML = '<div class="av">TB</div><div class="bubble"></div>';
+  const b = d.querySelector('.bubble'); b.innerHTML = md(src);
+  const poster = /Your poster is ready/.test(src);
+  const cap = poster ? captionForGoogleChat(src) : '';
+  if (cap) {
+    const bar = document.createElement('div'); bar.className = 'actions';
+    const copy = document.createElement('button'); copy.className = 'btn'; copy.textContent = '📋 Copy caption';
+    copy.onclick = async () => { try { await navigator.clipboard.writeText(cap); copy.textContent = '✅ Copied'; } catch (e) { copy.textContent = 'Select the text to copy'; } setTimeout(() => copy.textContent = '📋 Copy caption', 2200); };
+    bar.appendChild(copy);
+    const link = b.querySelector('img'); if (link) { const a = document.createElement('a'); a.className = 'btn alt'; a.href = link.src; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '🔍 Open poster'; bar.appendChild(a); }
+    b.appendChild(bar);
+  }
+  b.querySelectorAll('img').forEach(i => i.onclick = () => { $('lightbox').querySelector('img').src = i.src; $('lightbox').classList.add('show'); });
+  log.appendChild(d);
+  if (poster) {
+    const c = document.createElement('div'); c.className = 'chips';
+    FOLLOW.forEach(t => { const x = document.createElement('button'); x.className = 'chip'; x.textContent = t; x.onclick = () => { c.remove(); send(t.replace(/^[^\w"]+/, '').trim()); }; c.appendChild(x); });
+    log.appendChild(c);
+  }
+  if (poster) d.scrollIntoView({ behavior: 'smooth', block: 'start' }); else toBottom();
+}
+function typing() {
+  const steps = ['Checking the events board…', 'Planning your poster…', 'Writing the session blurbs…', 'Designing the poster…', 'Polishing the caption…', 'Almost there…'];
+  const d = document.createElement('div'); d.className = 'msg bot';
+  d.innerHTML = '<div class="av">TB</div><div class="bubble"><div class="typing"><span class="dots"><i></i><i></i><i></i></span><span class="s"></span></div></div>';
+  const s = d.querySelector('.s'); let i = 0; s.textContent = steps[0];
+  const t = setInterval(() => { i = Math.min(i + 1, steps.length - 1); s.textContent = steps[i]; }, 7000);
+  log.appendChild(d); toBottom();
+  return () => { clearInterval(t); d.remove(); };
+}
+
+async function send(text) {
+  text = (text || '').trim();
+  if (!text || busy) return;
+  document.getElementById('hero').style.display = 'none';
+  log.querySelectorAll('.chips').forEach(c => c.remove());
+  addUser(text); input.value = ''; autosize();
+  busy = true; sendBtn.disabled = true;
+  const stop = typing();
+  try {
+    const res = await fetch(CHAT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'sendMessage', sessionId, chatInput: (ASK_FOR_PASSCODE && passcode ? `[[key:${passcode}]] ` : '') + text }) });
+    let data = await res.json().catch(() => null);
+    if (Array.isArray(data)) data = data[0];
+    const out = data && (data.output || data.text || data.message);
+    stop();
+    if (!res.ok || !out) throw new Error('No answer');
+    addBot(String(out));
+  } catch (e) {
+    stop();
+    addBot("😕 Sorry, something went wrong on my side. Please try again in a moment. If it keeps happening, let the admin know.");
+  }
+  busy = false; sendBtn.disabled = false; input.focus();
+}
+
+function autosize() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 160) + 'px'; }
+input.addEventListener('input', autosize);
+input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input.value); } });
+sendBtn.onclick = () => send(input.value);
+$('reset').onclick = () => { sessionStorage.removeItem('tbc-session'); location.reload(); };
+$('lightbox').onclick = () => $('lightbox').classList.remove('show');
+
+IDEAS.forEach(i => {
+  const b = document.createElement('button'); b.className = 'card';
+  b.innerHTML = `<div class="ic">${i.ic}</div><div class="t">${i.t}</div><div class="d">${i.d}</div><div class="tag">${i.mode === 'fill' ? 'Fill in & send' : 'Click to try'}</div>`;
+  b.onclick = () => { if (i.mode === 'send') send(i.text); else { input.value = i.text; autosize(); input.focus(); input.setSelectionRange(input.value.length, input.value.length); } };
+  $('cards').appendChild(b);
+});
+
+if (ASK_FOR_PASSCODE && !passcode) {
+  $('gate').classList.add('show');
+  const go = () => { passcode = $('pass').value.trim(); if (passcode) { sessionStorage.setItem('tbc-pass', passcode); $('gate').classList.remove('show'); } };
+  $('passGo').onclick = go; $('pass').addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+}
+input.focus();
+</script>
+</body>
+</html>
